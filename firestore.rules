@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidApprentice(data) {
+      return data.fullName is string
+        && data.fullName.size() >= 3
+        && data.fullName.size() <= 120
+        && data.documentType in ['CC', 'TI', 'CE', 'PEP']
+        && data.documentNumber is string
+        && data.documentNumber.size() >= 4
+        && data.documentNumber.size() <= 20
+        && data.ficha is string
+        && data.ficha.size() >= 3
+        && data.ficha.size() <= 20
+        && data.consentLaw1581 == true
+        && data.status in ['no_iniciado', 'en_progreso', 'aprobado'];
+    }
+
+    // Colección de Aprendices
+    match /apprentices/{apprenticeId} {
+      allow read: if true;
+      allow create: if isValidId(apprenticeId) && isValidApprentice(incoming());
+      allow update: if isValidId(apprenticeId)
+        && incoming().documentNumber == existing().documentNumber
+        && incoming().documentType == existing().documentType
+        && isValidApprentice(incoming());
+      allow delete: if true;
+    }
+
+    // Default deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

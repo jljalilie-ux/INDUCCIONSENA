@@ -1,0 +1,52 @@
+{
+  "entities": {
+    "ApprenticeRecord": {
+      "title": "ApprenticeRecord",
+      "description": "Registro de aprendices para la inducción SENA conforme a la Ley 1581 de 2012",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Identificador único del registro" },
+        "fullName": { "type": "string", "minLength": 3, "maxLength": 120, "description": "Nombres y apellidos completos del aprendiz" },
+        "documentType": { "type": "string", "enum": ["CC", "TI", "CE", "PEP"], "description": "Tipo de documento de identidad" },
+        "documentNumber": { "type": "string", "minLength": 5, "maxLength": 20, "pattern": "^[0-9a-zA-Z\\-]+$", "description": "Número de documento de identidad único" },
+        "ficha": { "type": "string", "minLength": 4, "maxLength": 15, "pattern": "^[0-9]+$", "description": "Número de ficha o grupo de formación" },
+        "program": { "type": "string", "maxLength": 150, "description": "Nombre del programa de formación profesional" },
+        "regional": { "type": "string", "maxLength": 100, "description": "Regional SENA" },
+        "centroFormacion": { "type": "string", "maxLength": 150, "description": "Centro de formación profesional" },
+        "consentLaw1581": { "type": "boolean", "description": "Consentimiento expreso para tratamiento de datos personales Ley 1581 de 2012" },
+        "consentTimestamp": { "type": "string", "description": "Marca de tiempo de aceptación de la política de privacidad" },
+        "status": { "type": "string", "enum": ["no_iniciado", "en_progreso", "aprobado"], "description": "Estado de apropiación de la inducción" },
+        "inductionProgress": { "type": "number", "description": "Porcentaje de avance en la inducción (0-100)" },
+        "score": { "type": "number", "description": "Calificación obtenida en la evaluación de conocimientos (0-100)" },
+        "attemptsCount": { "type": "number", "description": "Número de intentos en la evaluación interactiva" },
+        "categoryBreakdown": {
+          "type": "object",
+          "description": "Desglose de puntajes por área evaluada",
+          "properties": {
+            "identidad": { "type": "number" },
+            "derechos": { "type": "number" },
+            "deberes": { "type": "number" },
+            "tramitesYEtapa": { "type": "number" }
+          }
+        },
+        "completedAt": { "type": "string", "description": "Fecha y hora de aprobación y culminación de la inducción" },
+        "createdAt": { "type": "string", "description": "Fecha y hora de registro inicial" },
+        "updatedAt": { "type": "string", "description": "Fecha y hora de última actualización de estado o examen" }
+      },
+      "required": [
+        "fullName",
+        "documentType",
+        "documentNumber",
+        "ficha",
+        "consentLaw1581",
+        "status"
+      ]
+    }
+  },
+  "firestore": {
+    "/apprentices/{apprenticeId}": {
+      "schema": "ApprenticeRecord",
+      "description": "Colección principal de aprendices registrados para el proceso de inducción SENA"
+    }
+  }
+}

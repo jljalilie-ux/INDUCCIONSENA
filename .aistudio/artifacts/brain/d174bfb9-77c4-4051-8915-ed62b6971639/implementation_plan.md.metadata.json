@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan detallado de arquitectura e implementación para la creación y sincronización continua de registros de aprendices y resultados de evaluación con Google Sheets en Google Drive mediante Google Workspace OAuth y Firestore.",
+  "updatedAt":  "2026-10-28T16:42:51.457367127Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}
